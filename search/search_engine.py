@@ -2,13 +2,16 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 
+from .ranker import Ranker
+
 class SearchEngine:
     def __init__(self, indexer, documents):
         self.indexer = indexer
         self.documents = documents
-        self.texts = [doc["text"] for doc in documents]
+        self.texts = [str(doc.get("text", "")) for doc in documents]
         self.vectorizer = CountVectorizer(ngram_range=(2, 3))
         self.doc_ngram_matrix = self.vectorizer.fit_transform(self.texts)
+        self.ranker = Ranker()
 
     def normalize(self, scores):
         min_val = scores.min()
@@ -23,12 +26,10 @@ class SearchEngine:
         return scores
 
     def search(self, query, top_k=5):
+        query = str(query).strip()
         query_vec = self.indexer.transform(query)
 
-        semantic_scores = cosine_similarity(
-            query_vec, self.indexer.doc_vectors
-        )[0]
-
+        semantic_scores = cosine_similarity(query_vec, self.indexer.doc_vectors)[0]
         ngram_scores = self.compute_ngram_scores(query)
 
         semantic_scores = self.normalize(semantic_scores)
@@ -36,15 +37,19 @@ class SearchEngine:
 
         final_scores = 0.7 * semantic_scores + 0.3 * ngram_scores
 
-        top_k_idx = np.argsort(final_scores)[-top_k:][::-1]
+        results = []
+        for i, doc in enumerate(self.documents):
+            full_text = str(doc.get("text", ""))
+            results.append({
+                "doc_id": doc.get("doc_id", f"doc_{i}"),
+                "document": doc,
+                "text": full_text[:200],
+                "full_text": full_text,
+                "semantic_score": float(semantic_scores[i]),
+                "ngram_score": float(ngram_scores[i]),
+                "score": float(final_scores[i]),
+                "search_score": float(final_scores[i])
+            })
 
-        results = [
-            {
-                "doc_id": self.documents[i]["doc_id"],
-                "text": self.documents[i]["text"][:200],
-                "score": float(final_scores[i])
-            }
-            for i in top_k_idx
-        ]
-
-        return results
+        results = self.ranker.rank(results)
+        return results[:top_k]

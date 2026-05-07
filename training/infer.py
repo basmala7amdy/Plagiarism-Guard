@@ -1,11 +1,13 @@
+from pathlib import Path
 import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
-Model_Path = "saved_models/saved_model"
+BASE_DIR = Path(__file__).resolve().parent
+MODEL_PATH = BASE_DIR / "saved_models" / "saved_model"
 
-tokenizer = AutoTokenizer.from_pretrained(Model_Path)
-model = AutoModelForSequenceClassification.from_pretrained(Model_Path)
+tokenizer = AutoTokenizer.from_pretrained(str(MODEL_PATH))
+model = AutoModelForSequenceClassification.from_pretrained(str(MODEL_PATH))
 model.eval()
 
 def predict(text1, text2, max_length=128):
@@ -35,16 +37,3 @@ def predict(text1, text2, max_length=128):
             "plagiarism": float(probs[1])
         }
     }
-
-if __name__ == "__main__":
-    result1 = predict(
-        "The company launched a new AI model.",
-        "A new artificial intelligence model was released by the company."
-    )
-
-    result2 = predict(
-        "The cat is sleeping on the sofa.",
-        "Quantum computing uses qubits to perform calculations."
-    )
-    print(result1)
-    print(result2)
