@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
@@ -10,6 +11,10 @@ tokenizer = AutoTokenizer.from_pretrained(str(MODEL_PATH))
 model = AutoModelForSequenceClassification.from_pretrained(str(MODEL_PATH))
 model.eval()
 
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(DEVICE)
+
+
 def predict(text1, text2, max_length=128):
     text1 = str(text1).strip()
     text2 = str(text2).strip()
@@ -20,8 +25,10 @@ def predict(text1, text2, max_length=128):
         truncation=True,
         padding="max_length",
         max_length=max_length,
-        return_tensors="pt"
+        return_tensors="pt",
     )
+
+    inputs = {k: v.to(DEVICE) for k, v in inputs.items()}
 
     with torch.no_grad():
         outputs = model(**inputs)
@@ -34,6 +41,6 @@ def predict(text1, text2, max_length=128):
         "confidence": float(probs[pred]),
         "probabilities": {
             "not_plagiarism": float(probs[0]),
-            "plagiarism": float(probs[1])
-        }
+            "plagiarism": float(probs[1]),
+        },
     }

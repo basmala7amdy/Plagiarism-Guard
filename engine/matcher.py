@@ -4,7 +4,11 @@ class Matcher:
 
         for doc in documents:
             if isinstance(doc, dict):
-                doc_text = doc.get("full_text") or doc.get("text", "")
+                doc_text = (
+                    doc.get("candidate_text")
+                    or doc.get("full_text")
+                    or doc.get("text", "")
+                )
                 doc_id = doc.get("doc_id")
                 raw_score = doc.get("search_score", doc.get("score", 0.0))
                 search_score = float(raw_score) if raw_score is not None else 0.0

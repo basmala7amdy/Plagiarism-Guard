@@ -1,11 +1,8 @@
 import json
 import sys
 from pathlib import Path
+from engine.aligner import best_matching_sentence
 
-# Make the repo root importable when this script is executed directly
-# (e.g. `python tests/sentence_corpus.py`), since otherwise only the
-# `tests/` folder is on sys.path and the `engine` / `similarity` /
-# `training` packages can't be resolved.
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
@@ -88,34 +85,6 @@ class NpySearchEngine:
 
         return results
 
-
-def _best_matching_sentence(query, doc_text, sent_model):
-    """Pick the sentence inside `doc_text` that best matches `query`.
-
-    Required because the corpus stores full documents but plagiarism is
-    judged at the sentence level: comparing one short query against an
-    entire long document dilutes every length-sensitive similarity metric
-    (Jaccard n-grams, difflib ratio, TF-IDF) and also gives the trained
-    classifier an input shape it never saw at training time.
-    """
-    candidates = [s.strip() for s in sent_tokenize(doc_text) if s.strip()]
-    if not candidates:
-        return doc_text.strip()
-    if len(candidates) == 1:
-        return candidates[0]
-
-    embs = sent_model.encode([query] + candidates, convert_to_numpy=True)
-    q = embs[0]
-    cand_embs = embs[1:]
-
-    q_norm = np.linalg.norm(q) or 1.0
-    c_norms = np.linalg.norm(cand_embs, axis=1)
-    c_norms[c_norms == 0] = 1.0
-
-    sims = (cand_embs @ q) / (c_norms * q_norm)
-    return candidates[int(np.argmax(sims))]
-
-
 def analyze_paragraph(paragraph, search_engine, detector, top_k=5):
     sentences = sent_tokenize(paragraph)
     results = []
@@ -127,11 +96,8 @@ def analyze_paragraph(paragraph, search_engine, detector, top_k=5):
 
         top_docs = search_engine.search(sentence, top_k=top_k)
 
-        # Replace each candidate's full document with the single sentence
-        # inside it that matches the query best, so the hybrid similarity
-        # and classifier compare sentence-to-sentence.
         for doc in top_docs:
-            best_sent = _best_matching_sentence(
+            best_sent = best_matching_sentence(
                 sentence, doc.get("full_text", ""), search_engine.model
             )
             doc["text"] = best_sent

@@ -4,11 +4,17 @@ from sklearn.feature_extraction.text import CountVectorizer
 
 from .ranker import Ranker
 
+
 class SearchEngine:
     def __init__(self, indexer, documents):
         self.indexer = indexer
         self.documents = documents
-        self.texts = [str(doc.get("text", "")) for doc in documents]
+
+        self.texts = [
+            str(doc.get("original") or doc.get("text", ""))
+            for doc in documents
+        ]
+
         self.vectorizer = CountVectorizer(ngram_range=(2, 3))
         self.doc_ngram_matrix = self.vectorizer.fit_transform(self.texts)
         self.ranker = Ranker()
@@ -39,16 +45,17 @@ class SearchEngine:
 
         results = []
         for i, doc in enumerate(self.documents):
-            full_text = str(doc.get("text", ""))
+            original_text = str(doc.get("original") or doc.get("text", ""))
+
             results.append({
                 "doc_id": doc.get("doc_id", f"doc_{i}"),
                 "document": doc,
-                "text": full_text[:200],
-                "full_text": full_text,
+                "text": original_text[:200],
+                "full_text": original_text,
                 "semantic_score": float(semantic_scores[i]),
                 "ngram_score": float(ngram_scores[i]),
                 "score": float(final_scores[i]),
-                "search_score": float(final_scores[i])
+                "search_score": float(final_scores[i]),
             })
 
         results = self.ranker.rank(results)

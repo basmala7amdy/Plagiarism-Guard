@@ -2,6 +2,7 @@ from .matcher import Matcher
 from .scorer import Scorer
 from training.infer import predict
 
+
 class PlagiarismDetector:
     def __init__(self, threshold=0.6):
         self.matcher = Matcher()
@@ -18,7 +19,7 @@ class PlagiarismDetector:
 
             search_score = float(pair.get("search_score", pair.get("score", 0.0)))
             hybrid_score = float(hybrid_result.get("final_score", 0.0))
-            model_score = float(model_result["probabilities"]["plagiarism"])
+            model_score = float(model_result.get("probabilities", {}).get("plagiarism", 0.0))
 
             final_score = (
                 0.3 * search_score +
@@ -30,9 +31,9 @@ class PlagiarismDetector:
                 "doc_id": pair["doc_id"],
                 "search_score": search_score,
                 "hybrid_score": hybrid_score,
-                "model_label": model_result["label"],
-                "model_prediction": model_result["prediction"],
-                "model_confidence": model_result["confidence"],
+                "model_label": model_result.get("label"),
+                "model_prediction": model_result.get("prediction"),
+                "model_confidence": model_result.get("confidence"),
                 "final_score": final_score,
                 "text": pair["doc_text"]
             })

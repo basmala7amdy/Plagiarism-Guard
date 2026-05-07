@@ -1,16 +1,22 @@
-import difflib
+import numpy as np
+from nltk.tokenize import sent_tokenize
 
-class Aligner:
 
-    def align(self, text1, text2):
-        matcher = difflib.SequenceMatcher(None, text1, text2)
+def best_matching_sentence(query, doc_text, sent_model):
+    candidates = [s.strip() for s in sent_tokenize(doc_text) if s.strip()]
 
-        matches = []
-        for match in matcher.get_matching_blocks():
-            matches.append({
-                "a_start": match.a,
-                "b_start": match.b,
-                "size": match.size
-            })
+    if not candidates:
+        return doc_text.strip()
+    if len(candidates) == 1:
+        return candidates[0]
 
-        return matches
+    embs = sent_model.encode([query] + candidates, convert_to_numpy=True)
+    q = embs[0]
+    cand_embs = embs[1:]
+
+    q_norm = np.linalg.norm(q) or 1.0
+    c_norms = np.linalg.norm(cand_embs, axis=1)
+    c_norms[c_norms == 0] = 1.0
+
+    sims = (cand_embs @ q) / (c_norms * q_norm)
+    return candidates[int(np.argmax(sims))]
