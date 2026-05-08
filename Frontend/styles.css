@@ -1,0 +1,490 @@
+/* ═══════════════════════════════════════════════════════════
+   PlagiarismGuard — styles.css
+   Dark-mode, neon-blue, glassmorphism AI dashboard aesthetic.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;800&display=swap');
+
+/* ── CSS Variables ── */
+:root {
+  --bg-primary:    #050810;
+  --bg-secondary:  #0a0e1a;
+  --bg-card:       rgba(10, 20, 40, 0.75);
+  --bg-glass:      rgba(255, 255, 255, 0.04);
+
+  --neon-blue:     #00b4ff;
+  --neon-cyan:     #00e5ff;
+  --neon-green:    #00e5a0;
+  --neon-red:      #ff4d6d;
+  --neon-amber:    #f0c040;
+
+  --text-primary:  #e8f0ff;
+  --text-secondary:#7fa8d4;
+  --text-muted:    #3d5478;
+
+  --border-glass:  rgba(0, 180, 255, 0.15);
+  --border-hover:  rgba(0, 180, 255, 0.50);
+
+  --font-display:  'Exo 2', sans-serif;
+  --font-mono:     'Share Tech Mono', monospace;
+
+  --radius-sm:     8px;
+  --radius-md:     14px;
+  --radius-lg:     20px;
+
+  --shadow-blue:   0 0 20px rgba(0, 180, 255, 0.25);
+  --shadow-card:   0 8px 32px rgba(0, 0, 0, 0.6);
+  --glow-blue:     0 0 12px rgba(0, 180, 255, 0.7), 0 0 40px rgba(0, 180, 255, 0.3);
+}
+
+/* ── Global resets ── */
+html, body, [data-testid="stAppViewContainer"] {
+  background: var(--bg-primary) !important;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,100,255,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 80% 90%, rgba(0,220,255,0.06) 0%, transparent 60%) !important;
+  font-family: var(--font-display) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-testid="stHeader"],
+[data-testid="stToolbar"] {
+  background: transparent !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
+
+/* ── Hero Section ── */
+.hero-wrapper {
+  text-align: center;
+  padding: 48px 24px 32px;
+  position: relative;
+}
+
+.hero-logo {
+  font-family: var(--font-display);
+  font-size: 3.6rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, #00b4ff 0%, #00e5ff 40%, #00e5a0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 18px rgba(0,180,255,0.6));
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.hero-tagline {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.hero-description {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* Animated scan-line under hero */
+.hero-scan-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+  margin: 28px auto;
+  max-width: 400px;
+  animation: scanPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes scanPulse {
+  0%, 100% { opacity: 0.3; transform: scaleX(0.7); }
+  50%       { opacity: 1;   transform: scaleX(1);   }
+}
+
+/* ── Status pill ── */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,229,160,0.10);
+  border: 1px solid rgba(0,229,160,0.35);
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--neon-green);
+  margin-bottom: 20px;
+  animation: fadeSlideDown 0.6s ease;
+}
+
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--neon-green);
+  animation: blink 1.5s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+
+/* ── Glass card ── */
+.glass-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-card);
+  padding: 30px;
+  margin-bottom: 20px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.glass-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-card), var(--shadow-blue);
+}
+
+/* ── Section header ── */
+.section-header {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+  margin: 28px 0 14px;
+  padding-left: 12px;
+  border-left: 3px solid var(--neon-blue);
+}
+
+/* ── Score card ── */
+.score-card {
+  text-align: center;
+  background: var(--bg-card);
+  border: 2px solid var(--neon-blue);
+  border-radius: var(--radius-lg);
+  padding: 36px 24px;
+  margin: 0 auto 20px;
+  backdrop-filter: blur(20px);
+  animation: fadeSlideDown 0.5s ease;
+}
+
+.score-ring {
+  font-family: var(--font-display);
+  font-size: 5rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 8px;
+  transition: all 0.3s;
+}
+
+.score-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.score-sub {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ── Mini stat cards ── */
+.mini-card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 20px 16px;
+  text-align: center;
+  transition: border-color 0.3s, transform 0.2s;
+}
+
+.mini-card:hover {
+  border-color: var(--neon-blue);
+  transform: translateY(-2px);
+}
+
+.mini-card-title {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.mini-card-value {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--neon-blue);
+  margin-bottom: 4px;
+}
+
+.mini-card-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ── Source cards ── */
+.source-card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.source-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-blue);
+}
+
+.source-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.source-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.source-badge {
+  border: 1px solid;
+  border-radius: 999px;
+  padding: 2px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.source-domain {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.source-bar-bg {
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  height: 5px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.source-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+.source-link {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--neon-blue);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.source-link:hover { opacity: 1; text-decoration: underline; }
+
+/* ── Highlighted text container ── */
+.highlight-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  line-height: 2;
+  font-size: 0.95rem;
+}
+
+.highlight-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-glass);
+  flex-wrap: wrap;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+
+.plagiarized-dot { background: rgba(255, 100, 100, 0.7); }
+.original-dot    { background: rgba(0, 180, 255, 0.4); }
+
+.highlight-body {
+  color: var(--text-primary);
+  font-family: var(--font-display);
+}
+
+/* Mark / highlighted text */
+.highlight-body mark.plagiarized,
+mark.plagiarized {
+  background: linear-gradient(135deg, rgba(255,77,109,0.30), rgba(255,140,66,0.20));
+  color: #ffb3be;
+  border-radius: 3px;
+  padding: 1px 4px;
+  border-bottom: 2px solid rgba(255,77,109,0.60);
+  font-style: normal;
+  text-decoration: none;
+}
+
+/* ── Streamlit textarea override ── */
+.stTextArea textarea {
+  background: rgba(10, 20, 40, 0.9) !important;
+  border: 1px solid var(--border-glass) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-display) !important;
+  font-size: 0.95rem !important;
+  transition: border-color 0.3s, box-shadow 0.3s !important;
+  resize: vertical !important;
+}
+
+.stTextArea textarea:focus {
+  border-color: var(--neon-blue) !important;
+  box-shadow: 0 0 0 2px rgba(0,180,255,0.2) !important;
+  outline: none !important;
+}
+
+/* ── File uploader ── */
+[data-testid="stFileUploader"] {
+  background: var(--bg-glass) !important;
+  border: 1.5px dashed var(--border-glass) !important;
+  border-radius: var(--radius-md) !important;
+  padding: 20px !important;
+  transition: border-color 0.3s !important;
+}
+
+[data-testid="stFileUploader"]:hover {
+  border-color: var(--neon-blue) !important;
+}
+
+/* ── Primary button ── */
+.stButton > button {
+  background: linear-gradient(135deg, #0066cc 0%, #0099ff 50%, #00ccff 100%) !important;
+  border: none !important;
+  border-radius: var(--radius-md) !important;
+  color: white !important;
+  font-family: var(--font-display) !important;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  letter-spacing: 1px !important;
+  padding: 14px 32px !important;
+  width: 100% !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+  box-shadow: 0 0 20px rgba(0,180,255,0.4), 0 4px 15px rgba(0,0,0,0.4) !important;
+  text-transform: uppercase !important;
+}
+
+.stButton > button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 0 35px rgba(0,180,255,0.7), 0 8px 25px rgba(0,0,0,0.5) !important;
+  background: linear-gradient(135deg, #0077dd 0%, #00aaff 50%, #00ddff 100%) !important;
+}
+
+.stButton > button:active {
+  transform: translateY(0) !important;
+}
+
+/* ── Divider ── */
+hr {
+  border: none !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent, var(--border-glass), transparent) !important;
+  margin: 24px 0 !important;
+}
+
+/* ── Animations ── */
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.results-wrapper {
+  animation: fadeIn 0.6s ease;
+}
+
+/* ── Spinner override ── */
+[data-testid="stSpinner"] {
+  color: var(--neon-blue) !important;
+}
+
+/* ── Sidebar ── */
+[data-testid="stSidebar"] {
+  background: rgba(5, 8, 16, 0.95) !important;
+  border-right: 1px solid var(--border-glass) !important;
+}
+
+/* ── Info / warning / error boxes ── */
+[data-testid="stAlert"] {
+  background: var(--bg-glass) !important;
+  border-radius: var(--radius-md) !important;
+  border: 1px solid var(--border-glass) !important;
+}
+
+/* ── Tabs ── */
+.stTabs [data-baseweb="tab-list"] {
+  background: transparent !important;
+  border-bottom: 1px solid var(--border-glass) !important;
+  gap: 4px;
+}
+
+.stTabs [data-baseweb="tab"] {
+  background: transparent !important;
+  color: var(--text-muted) !important;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0 !important;
+  padding: 8px 20px !important;
+  font-family: var(--font-display) !important;
+  font-size: 0.9rem !important;
+  transition: color 0.2s !important;
+}
+
+.stTabs [aria-selected="true"] {
+  color: var(--neon-blue) !important;
+  border-bottom: 2px solid var(--neon-blue) !important;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .hero-logo { font-size: 2.4rem; }
+  .score-ring { font-size: 3.5rem; }
+}
