@@ -318,7 +318,7 @@ html, body, [data-testid="stAppViewContainer"] {
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
   padding: 24px;
-  line-height: 2;
+  line-height: 1.7;
   font-size: 0.95rem;
 }
 
@@ -347,11 +347,19 @@ html, body, [data-testid="stAppViewContainer"] {
 .highlight-body {
   color: var(--text-primary);
   font-family: var(--font-display);
+  max-height: 60vh;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  padding-right: 8px;
 }
 
 /* Mark / highlighted text */
 .highlight-body mark.plagiarized,
-mark.plagiarized {
+.highlight-body span.plagiarized,
+mark.plagiarized,
+span.plagiarized {
   background: linear-gradient(135deg, rgba(255,77,109,0.30), rgba(255,140,66,0.20));
   color: #ffb3be;
   border-radius: 3px;

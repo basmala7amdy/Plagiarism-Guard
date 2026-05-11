@@ -7,7 +7,7 @@ class PlagiarismDetector:
     def __init__(self, threshold=0.6):
         self.matcher = Matcher()
         self.scorer = Scorer()
-        self.threshold = threshold
+        self.threshold = threshold  # minimum score to flag as plagiarism
 
     def detect(self, query, documents):
         pairs = self.matcher.match(query, documents)
@@ -21,6 +21,7 @@ class PlagiarismDetector:
             hybrid_score = float(hybrid_result.get("final_score", 0.0))
             model_score = float(model_result.get("probabilities", {}).get("plagiarism", 0.0))
 
+            # weighted blend of search, similarity, and model scores
             final_score = (
                 0.3 * search_score +
                 0.3 * hybrid_score +
@@ -39,12 +40,7 @@ class PlagiarismDetector:
             })
 
         if not results:
-            return {
-                "prediction": "not_plagiarism",
-                "final_score": 0.0,
-                "best_match": None,
-                "details": []
-            }
+            return {"prediction": "not_plagiarism", "final_score": 0.0, "best_match": None, "details": []}
 
         best = max(results, key=lambda x: x["final_score"])
 

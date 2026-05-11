@@ -31,11 +31,11 @@ def main():
         batch_size=BATCH_SIZE,
         convert_to_numpy=True,
         show_progress_bar=True,
-        normalize_embeddings=False,
+        normalize_embeddings=False,  # normalisation done at search time
     ).astype(np.float32)
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    np.save(OUT_PATH, embeddings)
+    np.save(OUT_PATH, embeddings)  # save as .npy for fast loading
 
     print(f"Saved embeddings: {OUT_PATH}")
 

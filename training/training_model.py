@@ -11,7 +11,7 @@ from transformers import (
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 
 Model_Name = 'roberta-base'
-Max_Length = 128
+Max_Length = 128  # max token sequence length
 Train_Path = r'C:\Users\AmrAhmed\Documents\GitHub\Plagiarism-Guard\data\procressed\mrpc_train_clean.csv'
 Test_Path = r'C:\Users\AmrAhmed\Documents\GitHub\Plagiarism-Guard\data\procressed\mrpc_test_clean.csv'
 Save_Path = 'saved_models/saved_model'
@@ -39,19 +39,11 @@ def evaluate_metrics(eval_pred):
     preds = np.argmax(logits, axis=-1)
 
     precision, recall, f1, _ = precision_recall_fscore_support(
-        labels,
-        preds,
-        average='binary',
-        zero_division=0
+        labels, preds, average='binary', zero_division=0
     )
     accuracy = accuracy_score(labels, preds)
 
-    return {
-        'accuracy': accuracy,
-        'precision': precision,
-        'recall': recall,
-        'f1_score': f1
-    }
+    return {'accuracy': accuracy, 'precision': precision, 'recall': recall, 'f1_score': f1}
 
 def main():
     train_df = load_data(Train_Path)
@@ -62,15 +54,8 @@ def main():
 
     tokenizer = AutoTokenizer.from_pretrained(Model_Name)
 
-    train_dataset = train_dataset.map(
-        lambda batch: tokenize_batch(batch, tokenizer),
-        batched=True
-    )
-
-    test_dataset = test_dataset.map(
-        lambda batch: tokenize_batch(batch, tokenizer),
-        batched=True
-    )
+    train_dataset = train_dataset.map(lambda batch: tokenize_batch(batch, tokenizer), batched=True)
+    test_dataset = test_dataset.map(lambda batch: tokenize_batch(batch, tokenizer), batched=True)
 
     train_dataset = train_dataset.remove_columns(['text1', 'text2'])
     test_dataset = test_dataset.remove_columns(['text1', 'text2'])
@@ -81,10 +66,7 @@ def main():
     train_dataset.set_format('torch')
     test_dataset.set_format('torch')
 
-    model = AutoModelForSequenceClassification.from_pretrained(
-        Model_Name,
-        num_labels=2
-    )
+    model = AutoModelForSequenceClassification.from_pretrained(Model_Name, num_labels=2)
 
     training_args = TrainingArguments(
         output_dir="results",
@@ -96,10 +78,10 @@ def main():
         num_train_epochs=3,
         weight_decay=0.02,
         logging_dir="logs",
-        load_best_model_at_end=True,
-        metric_for_best_model="f1_score",
+        load_best_model_at_end=True,      # restore best checkpoint after training
+        metric_for_best_model="f1_score", # optimise for F1
         greater_is_better=True,
-        fp16=True,
+        fp16=True,                         # mixed precision training
         dataloader_pin_memory=True
     )
 

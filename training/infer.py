@@ -9,9 +9,9 @@ MODEL_PATH = BASE_DIR / "saved_models" / "saved_model"
 
 tokenizer = AutoTokenizer.from_pretrained(str(MODEL_PATH))
 model = AutoModelForSequenceClassification.from_pretrained(str(MODEL_PATH))
-model.eval()
+model.eval()  # disable dropout for inference
 
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")  # use GPU if available
 model.to(DEVICE)
 
 
@@ -20,20 +20,18 @@ def predict(text1, text2, max_length=128):
     text2 = str(text2).strip()
 
     inputs = tokenizer(
-        text1,
-        text2,
+        text1, text2,
         truncation=True,
         padding="max_length",
         max_length=max_length,
         return_tensors="pt",
     )
-
     inputs = {k: v.to(DEVICE) for k, v in inputs.items()}
 
     with torch.no_grad():
         outputs = model(**inputs)
-        probs = F.softmax(outputs.logits, dim=1)[0]
-        pred = int(torch.argmax(probs).item())
+        probs = F.softmax(outputs.logits, dim=1)[0]  # convert logits to probabilities
+        pred = int(torch.argmax(probs).item())  # predicted class index
 
     return {
         "label": pred,

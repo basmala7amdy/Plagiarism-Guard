@@ -16,7 +16,7 @@ class SearchEngine:
         ]
 
         self.vectorizer = CountVectorizer(ngram_range=(2, 3))
-        self.doc_ngram_matrix = self.vectorizer.fit_transform(self.texts)
+        self.doc_ngram_matrix = self.vectorizer.fit_transform(self.texts)  # precompute n-gram matrix
         self.ranker = Ranker()
 
     def normalize(self, scores):
@@ -41,12 +41,11 @@ class SearchEngine:
         semantic_scores = self.normalize(semantic_scores)
         ngram_scores = self.normalize(ngram_scores)
 
-        final_scores = 0.7 * semantic_scores + 0.3 * ngram_scores
+        final_scores = 0.7 * semantic_scores + 0.3 * ngram_scores  # weighted blend
 
         results = []
         for i, doc in enumerate(self.documents):
             original_text = str(doc.get("original") or doc.get("text", ""))
-
             results.append({
                 "doc_id": doc.get("doc_id", f"doc_{i}"),
                 "document": doc,

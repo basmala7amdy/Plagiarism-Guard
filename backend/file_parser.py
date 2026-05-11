@@ -6,7 +6,7 @@ from docx import Document
 
 def extract_pdf(data: bytes) -> str:
     with pdfplumber.open(io.BytesIO(data)) as pdf:
-        return "\n".join(p.extract_text() or "" for p in pdf.pages)
+        return "\n".join(p.extract_text() or "" for p in pdf.pages)  # fallback "" for blank pages
 
 
 def extract_docx(data: bytes) -> str:

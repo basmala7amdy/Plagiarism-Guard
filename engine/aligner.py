@@ -16,7 +16,7 @@ def best_matching_sentence(query, doc_text, sent_model):
 
     q_norm = np.linalg.norm(q) or 1.0
     c_norms = np.linalg.norm(cand_embs, axis=1)
-    c_norms[c_norms == 0] = 1.0
+    c_norms[c_norms == 0] = 1.0  # avoid divide-by-zero
 
-    sims = (cand_embs @ q) / (c_norms * q_norm)
-    return candidates[int(np.argmax(sims))]
+    sims = (cand_embs @ q) / (c_norms * q_norm)  # cosine similarity scores
+    return candidates[int(np.argmax(sims))]  # return best-matching sentence

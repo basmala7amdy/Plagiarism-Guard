@@ -24,9 +24,7 @@ class Scorer:
                 "ngram": float(result.get("ngram", result.get("ngram_score", 0.0))),
                 "semantic": float(result.get("semantic", result.get("semantic_score", 0.0))),
                 "sequence": float(result.get("sequence", result.get("sequence_score", 0.0))),
-                "final_score": float(result.get("final_score", result.get("score", 0.0))),
+                "final_score": float(result.get("final_score", result.get("score", 0.0))),  # normalised 0-1
             }
 
-        return {
-            "final_score": float(result)
-        }
+        return {"final_score": float(result)}

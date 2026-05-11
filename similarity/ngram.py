@@ -1,5 +1,6 @@
 from nltk.util import ngrams
 
+
 class NgramSimilarity:
 
     def __init__(self, n=3):
@@ -19,4 +20,4 @@ class NgramSimilarity:
         if union == 0:
             return 0.0
 
-        return intersection / union
+        return intersection / union  # Jaccard similarity

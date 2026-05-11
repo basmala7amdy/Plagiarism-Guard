@@ -15,7 +15,7 @@ def test_cosine_similarity():
     score = model.compute(text1, text2)
 
     assert 0 <= score <= 1
-    assert score > 0.3  
+    assert score > 0.3
 
 
 def test_ngram_similarity():
@@ -36,7 +36,7 @@ def test_semantic_similarity():
     model = SemanticSimilarity()
     score = model.compute(text1, text2)
 
-    assert score > 0.5   
+    assert score > 0.5
 
 
 def test_hybrid_similarity():

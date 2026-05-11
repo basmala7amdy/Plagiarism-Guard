@@ -3,6 +3,7 @@ from .ngram import NgramSimilarity
 from .sequence import SequenceSimilarity
 from .semantic import SemanticSimilarity
 
+
 class HybridSimilarity:
 
     def __init__(self):
@@ -12,12 +13,12 @@ class HybridSimilarity:
         self.semantic = SemanticSimilarity()
 
     def compute(self, text1, text2):
-
         cos = self.cosine.compute(text1, text2)
         ngr = self.ngram.compute(text1, text2)
         seq = self.sequence.compute(text1, text2)
         sem = self.semantic.compute(text1, text2)
 
+        # weighted blend of all four similarity signals
         final_score = (
             0.3 * cos +
             0.2 * ngr +
